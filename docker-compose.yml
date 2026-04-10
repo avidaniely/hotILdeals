@@ -1,0 +1,22 @@
+services:
+  hotildeals:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotildeals
+    ports:
+      - "3001:3001"
+    env_file:
+      - server/.env
+    volumes:
+      - uploads:/app/server/uploads/deals
+    networks:
+      - webapp_webapp-net
+    restart: unless-stopped
+
+volumes:
+  uploads:
+
+networks:
+  webapp_webapp-net:
+    external: true

@@ -1,0 +1,20 @@
+[
+  {
+    "_comment": "Add deal sources here. Example structure:",
+    "_example": {
+      "name": "Source Name",
+      "url": "https://example.com/deals",
+      "merchant": "Example Store",
+      "category_id": 1,
+      "type": "static",
+      "selectors": {
+        "item": ".deal-item",
+        "title": ".deal-title",
+        "link": "a",
+        "price": ".deal-price",
+        "image": "img",
+        "merchant": ".deal-merchant"
+      }
+    }
+  }
+]
