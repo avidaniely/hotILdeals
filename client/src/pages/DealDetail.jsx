@@ -20,13 +20,13 @@ export default function DealDetail({ user }) {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (!deal) return <div className="loading">Deal not found.</div>;
+  if (loading) return <div className="loading">טוען...</div>;
+  if (!deal) return <div className="loading">המבצע לא נמצא.</div>;
 
   return (
     <div className="page-container">
       <Link to="/" style={{ color: 'var(--link-blue)', fontSize: 13, display: 'inline-block', marginBottom: 12 }}>
-        ← Back to deals
+        → חזרה למבצעים
       </Link>
       <div className="deal-detail">
         {deal.image_path && (
@@ -38,7 +38,7 @@ export default function DealDetail({ user }) {
         <div className="deal-card-meta" style={{ marginBottom: 8 }}>
           {deal.merchant && <span className="deal-card-merchant">{deal.merchant}</span>}
           {deal.category_name && <span>• {deal.category_name}</span>}
-          {deal.posted_by && <span>• posted by {deal.posted_by}</span>}
+          {deal.posted_by && <span>• פורסם ע״י {deal.posted_by}</span>}
         </div>
 
         <div className="deal-detail-price-row">
@@ -66,7 +66,7 @@ export default function DealDetail({ user }) {
             rel="noopener noreferrer"
             className="btn-go-deal"
           >
-            Get Deal →
+            לעסקה ←
           </a>
         </div>
       </div>

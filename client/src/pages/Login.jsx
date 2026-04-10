@@ -19,7 +19,7 @@ export default function Login({ onLogin }) {
       onLogin(data.user);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.response?.data?.error || 'הכניסה נכשלה');
     } finally {
       setLoading(false);
     }
@@ -28,23 +28,23 @@ export default function Login({ onLogin }) {
   return (
     <div className="page-container">
       <div className="form-page">
-        <h1>Log in</h1>
+        <h1>כניסה לחשבון</h1>
         {error && <p className="form-error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>אימייל</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>סיסמה</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
           <button type="submit" className="form-submit" disabled={loading}>
-            {loading ? 'Logging in...' : 'Log in'}
+            {loading ? 'מתחבר...' : 'כניסה'}
           </button>
         </form>
         <p className="form-link">
-          No account? <Link to="/register">Register here</Link>
+          אין חשבון? <Link to="/register">הירשם כאן</Link>
         </p>
       </div>
     </div>

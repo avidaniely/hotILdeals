@@ -24,7 +24,7 @@ export default function NavBar({ user, onLogout, onSearch }) {
           <form onSubmit={handleSearch}>
             <input
               type="text"
-              placeholder="Search deals..."
+              placeholder="חיפוש מבצעים..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -34,15 +34,15 @@ export default function NavBar({ user, onLogout, onSearch }) {
         <div className="navbar-actions">
           {user ? (
             <>
-              <span className="navbar-username">Hi, {user.username}</span>
-              <Link to="/post-deal" className="btn btn-white">Post Deal</Link>
-              <button className="btn btn-outline-white" onClick={onLogout}>Logout</button>
+              <span className="navbar-username">שלום, {user.username}</span>
+              <Link to="/post-deal" className="btn btn-white">פרסם מבצע</Link>
+              <button className="btn btn-outline-white" onClick={onLogout}>התנתק</button>
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-outline-white">Log in</Link>
-              <Link to="/register" className="btn btn-white">Register</Link>
-              <Link to="/post-deal" className="btn btn-white">Post Deal</Link>
+              <Link to="/login" className="btn btn-outline-white">כניסה</Link>
+              <Link to="/register" className="btn btn-white">הרשמה</Link>
+              <Link to="/post-deal" className="btn btn-white">פרסם מבצע</Link>
             </>
           )}
         </div>

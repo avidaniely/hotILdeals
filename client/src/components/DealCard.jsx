@@ -8,10 +8,10 @@ function formatPrice(price) {
 
 function timeAgo(dateStr) {
   const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
+  if (diff < 60) return 'עכשיו';
+  if (diff < 3600) return `לפני ${Math.floor(diff / 60)} דק׳`;
+  if (diff < 86400) return `לפני ${Math.floor(diff / 3600)} שע׳`;
+  return `לפני ${Math.floor(diff / 86400)} ימים`;
 }
 
 export default function DealCard({ deal, user, onVote }) {
@@ -42,7 +42,7 @@ export default function DealCard({ deal, user, onVote }) {
         <div className="deal-card-meta">
           {deal.merchant && <span className="deal-card-merchant">{deal.merchant}</span>}
           {deal.category_name && <span>• {deal.category_name}</span>}
-          {deal.posted_by && <span>• by {deal.posted_by}</span>}
+          {deal.posted_by && <span>• פורסם ע״י {deal.posted_by}</span>}
           <span>• {timeAgo(deal.created_at)}</span>
         </div>
 
@@ -65,7 +65,7 @@ export default function DealCard({ deal, user, onVote }) {
             rel="noopener noreferrer"
             className="deal-card-go-btn"
           >
-            Get Deal →
+            לעסקה ←
           </a>
         </div>
       </div>

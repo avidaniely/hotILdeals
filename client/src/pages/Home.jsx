@@ -17,6 +17,7 @@ export default function Home({ user }) {
 
   useEffect(() => {
     setLoading(true);
+
     const query = new URLSearchParams({ tab, page });
     if (category) query.set('category', category);
     if (search) query.set('search', search);
@@ -38,20 +39,20 @@ export default function Home({ user }) {
     window.scrollTo(0, 0);
   }
 
-  if (loading) return <div className="loading">Loading deals...</div>;
+  if (loading) return <div className="loading">טוען מבצעים...</div>;
 
   return (
     <div className="page-container">
       {search && (
         <p style={{ marginBottom: 12, color: 'var(--text-muted)', fontSize: 14 }}>
-          {total} results for "<strong>{search}</strong>"
+          נמצאו {total} תוצאות עבור "<strong>{search}</strong>"
         </p>
       )}
 
       {deals.length === 0 ? (
         <div className="empty-state">
-          <h3>No deals found</h3>
-          <p>Try a different tab or category.</p>
+          <h3>לא נמצאו מבצעים</h3>
+          <p>נסה לשנות קטגוריה או סנן.</p>
         </div>
       ) : (
         <div className="deal-list">

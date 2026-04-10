@@ -29,7 +29,7 @@ export default function PostDeal({ user }) {
       const { data } = await api.post('/deals', form);
       navigate(`/deals/${data.id}`);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to post deal');
+      setError(err.response?.data?.error || 'פרסום המבצע נכשל');
     } finally {
       setLoading(false);
     }
@@ -39,8 +39,8 @@ export default function PostDeal({ user }) {
     return (
       <div className="page-container">
         <div className="form-page">
-          <h1>Post a Deal</h1>
-          <p>You need to <Link to="/login" style={{ color: 'var(--link-blue)' }}>log in</Link> to post a deal.</p>
+          <h1>פרסום מבצע</h1>
+          <p>יש <Link to="/login" style={{ color: 'var(--link-blue)' }}>להתחבר</Link> כדי לפרסם מבצע.</p>
         </div>
       </div>
     );
@@ -49,36 +49,36 @@ export default function PostDeal({ user }) {
   return (
     <div className="page-container">
       <div className="post-deal-page">
-        <h1>Post a Deal</h1>
+        <h1>פרסום מבצע</h1>
         {error && <p className="form-error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Deal title *</label>
-            <input value={form.title} onChange={set('title')} required maxLength={500} placeholder="e.g. Samsung 55'' TV - 40% off" />
+            <label>כותרת המבצע *</label>
+            <input value={form.title} onChange={set('title')} required maxLength={500} placeholder='למשל: טלוויזיה 55" סמסונג - 40% הנחה' />
           </div>
           <div className="form-group">
-            <label>Deal URL *</label>
+            <label>קישור למבצע *</label>
             <input type="url" value={form.url} onChange={set('url')} required placeholder="https://..." />
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Price (₪)</label>
+              <label>מחיר (₪)</label>
               <input type="number" step="0.01" min="0" value={form.price} onChange={set('price')} placeholder="0.00" />
             </div>
             <div className="form-group">
-              <label>Original price (₪)</label>
+              <label>מחיר מקורי (₪)</label>
               <input type="number" step="0.01" min="0" value={form.original_price} onChange={set('original_price')} placeholder="0.00" />
             </div>
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Merchant / Store</label>
-              <input value={form.merchant} onChange={set('merchant')} placeholder="e.g. Amazon IL" />
+              <label>חנות / מותג</label>
+              <input value={form.merchant} onChange={set('merchant')} placeholder="למשל: אמזון ישראל" />
             </div>
             <div className="form-group">
-              <label>Category</label>
+              <label>קטגוריה</label>
               <select value={form.category_id} onChange={set('category_id')}>
-                <option value="">Select category</option>
+                <option value="">בחר קטגוריה</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
                 ))}
@@ -86,19 +86,19 @@ export default function PostDeal({ user }) {
             </div>
           </div>
           <div className="form-group">
-            <label>Image URL (optional)</label>
+            <label>קישור לתמונה (אופציונלי)</label>
             <input type="url" value={form.image_url} onChange={set('image_url')} placeholder="https://..." />
           </div>
           <div className="form-group">
-            <label>Description</label>
-            <textarea value={form.description} onChange={set('description')} placeholder="Describe the deal..." />
+            <label>תיאור</label>
+            <textarea value={form.description} onChange={set('description')} placeholder="תאר את המבצע..." />
           </div>
           <div className="form-group">
-            <label>Expires at (optional)</label>
+            <label>תוקף המבצע (אופציונלי)</label>
             <input type="datetime-local" value={form.expires_at} onChange={set('expires_at')} />
           </div>
           <button type="submit" className="form-submit" disabled={loading}>
-            {loading ? 'Posting...' : 'Post Deal'}
+            {loading ? 'מפרסם...' : 'פרסם מבצע'}
           </button>
         </form>
       </div>

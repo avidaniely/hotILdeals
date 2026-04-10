@@ -19,11 +19,13 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
   color: var(--text-dark);
   background: var(--bg-alt);
   font-size: 15px;
   line-height: 1.5;
+  direction: rtl;
+  text-align: right;
 }
 
 a { color: inherit; text-decoration: none; }

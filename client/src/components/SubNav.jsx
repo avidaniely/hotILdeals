@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import api from '../api';
 
 const TABS = [
-  { key: 'new', label: 'New' },
-  { key: 'highlights', label: 'Highlights' },
-  { key: 'hottest', label: 'Hottest' },
-  { key: 'hot', label: '🔥 Hot' },
+  { key: 'new', label: 'חדש' },
+  { key: 'highlights', label: 'נבחרים' },
+  { key: 'hottest', label: 'הכי חם' },
+  { key: 'hot', label: '🔥 חם' },
 ];
 
 export default function SubNav() {
@@ -53,7 +53,7 @@ export default function SubNav() {
             value={activeCategory}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">All Categories</option>
+            <option value="">כל הקטגוריות</option>
             {categories.map((c) => (
               <option key={c.id} value={c.slug}>
                 {c.icon} {c.name}

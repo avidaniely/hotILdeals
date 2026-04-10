@@ -10,7 +10,7 @@ export default function TemperatureVote({ deal, user, onChange }) {
 
   async function vote(type) {
     if (!user) {
-      alert('Please log in to vote');
+      alert('יש להתחבר כדי להצביע');
       return;
     }
     if (loading) return;
@@ -36,7 +36,7 @@ export default function TemperatureVote({ deal, user, onChange }) {
       <button
         className={`vote-btn ${userVote === 'hot' ? 'active-hot' : ''}`}
         onClick={() => vote('hot')}
-        title="Hot deal"
+        title="מבצע חם"
         disabled={loading}
       >
         🔥
@@ -47,7 +47,7 @@ export default function TemperatureVote({ deal, user, onChange }) {
       <button
         className={`vote-btn ${userVote === 'cold' ? 'active-cold' : ''}`}
         onClick={() => vote('cold')}
-        title="Cold deal"
+        title="מבצע קר"
         disabled={loading}
       >
         🥶

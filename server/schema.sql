@@ -51,11 +51,11 @@ CREATE TABLE IF NOT EXISTS votes (
 );
 
 INSERT IGNORE INTO categories (name, slug, icon) VALUES
-  ('Electronics', 'electronics', '💻'),
-  ('Fashion', 'fashion', '👗'),
-  ('Home & Garden', 'home-garden', '🏠'),
-  ('Food & Drink', 'food-drink', '🍔'),
-  ('Travel', 'travel', '✈️'),
-  ('Entertainment', 'entertainment', '🎬'),
-  ('Sports', 'sports', '⚽'),
-  ('Other', 'other', '🏷️');
+  ('אלקטרוניקה', 'electronics', '💻'),
+  ('אופנה', 'fashion', '👗'),
+  ('בית וגינה', 'home-garden', '🏠'),
+  ('מזון ומשקאות', 'food-drink', '🍔'),
+  ('תיירות', 'travel', '✈️'),
+  ('בילוי ופנאי', 'entertainment', '🎬'),
+  ('ספורט', 'sports', '⚽'),
+  ('אחר', 'other', '🏷️');
