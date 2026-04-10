@@ -1,12 +1,13 @@
-import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Sparkles, Flame, TrendingUp, Clock, ChevronDown } from 'lucide-react';
 import api from '../api';
 
 const TABS = [
-  { key: 'new', label: 'חדש' },
-  { key: 'highlights', label: 'נבחרים' },
-  { key: 'hottest', label: 'הכי חם' },
-  { key: 'hot', label: '🔥 חם' },
+  { key: 'new',        label: 'חדש',     icon: Clock },
+  { key: 'highlights', label: 'נבחרים',  icon: Sparkles },
+  { key: 'hottest',    label: 'הכי חם',  icon: TrendingUp },
+  { key: 'hot',        label: 'חם',      icon: Flame },
 ];
 
 export default function SubNav() {
@@ -37,15 +38,21 @@ export default function SubNav() {
   return (
     <div className="subnav">
       <div className="subnav-inner">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            className={`subnav-tab ${activeTab === t.key ? 'active' : ''}`}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
+        {TABS.map((t, i) => {
+          const Icon = t.icon;
+          return (
+            <button
+              key={t.key}
+              className={`subnav-tab ${activeTab === t.key ? 'active' : ''}`}
+              onClick={() => setTab(t.key)}
+            >
+              <span className="subnav-tab-icon"><Icon size={14} /></span>
+              {t.label}
+            </button>
+          );
+        })}
+
+        <div className="subnav-divider" />
 
         {categories.length > 0 && (
           <select

@@ -17,17 +17,11 @@ export default function Home({ user }) {
 
   useEffect(() => {
     setLoading(true);
-
     const query = new URLSearchParams({ tab, page });
     if (category) query.set('category', category);
     if (search) query.set('search', search);
-
     api.get(`/deals?${query}`)
-      .then(({ data }) => {
-        setDeals(data.deals);
-        setTotal(data.total);
-        setPages(data.pages);
-      })
+      .then(({ data }) => { setDeals(data.deals); setTotal(data.total); setPages(data.pages); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [tab, category, search, page]);
@@ -39,20 +33,26 @@ export default function Home({ user }) {
     window.scrollTo(0, 0);
   }
 
-  if (loading) return <div className="loading">טוען מבצעים...</div>;
+  if (loading) return (
+    <div className="loading">
+      <div className="loading-spinner" />
+      טוען מבצעים...
+    </div>
+  );
 
   return (
     <div className="page-container">
       {search && (
-        <p style={{ marginBottom: 12, color: 'var(--text-muted)', fontSize: 14 }}>
-          נמצאו {total} תוצאות עבור "<strong>{search}</strong>"
+        <p style={{ marginBottom: 14, color: 'var(--text-muted)', fontSize: 13 }}>
+          נמצאו <strong>{total}</strong> תוצאות עבור &ldquo;{search}&rdquo;
         </p>
       )}
 
       {deals.length === 0 ? (
         <div className="empty-state">
+          <div className="empty-state-icon">🏷️</div>
           <h3>לא נמצאו מבצעים</h3>
-          <p>נסה לשנות קטגוריה או סנן.</p>
+          <p>נסה לשנות קטגוריה או לחפש משהו אחר.</p>
         </div>
       ) : (
         <div className="deal-list">
@@ -64,24 +64,16 @@ export default function Home({ user }) {
 
       {pages > 1 && (
         <div className="pagination">
-          {page > 1 && (
-            <button className="page-btn" onClick={() => setPage(page - 1)}>‹</button>
-          )}
+          {page > 1 && <button className="page-btn" onClick={() => setPage(page - 1)}>›</button>}
           {Array.from({ length: Math.min(pages, 7) }, (_, i) => {
             const p = i + 1;
             return (
-              <button
-                key={p}
-                className={`page-btn ${p === page ? 'active' : ''}`}
-                onClick={() => setPage(p)}
-              >
+              <button key={p} className={`page-btn ${p === page ? 'active' : ''}`} onClick={() => setPage(p)}>
                 {p}
               </button>
             );
           })}
-          {page < pages && (
-            <button className="page-btn" onClick={() => setPage(page + 1)}>›</button>
-          )}
+          {page < pages && <button className="page-btn" onClick={() => setPage(page + 1)}>‹</button>}
         </div>
       )}
     </div>

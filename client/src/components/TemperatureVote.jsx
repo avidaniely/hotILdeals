@@ -1,25 +1,26 @@
 import { useState } from 'react';
+import { ThumbsUp, ThumbsDown, Flame } from 'lucide-react';
 import api from '../api';
+
+function getTempClass(temp) {
+  if (temp > 100) return 'hot';
+  if (temp > 20) return 'warm';
+  if (temp < 0) return 'cold';
+  return 'neutral';
+}
 
 export default function TemperatureVote({ deal, user, onChange }) {
   const [loading, setLoading] = useState(false);
-  const [userVote, setUserVote] = useState(null); // 'hot' | 'cold' | null
+  const [userVote, setUserVote] = useState(null);
   const [temp, setTemp] = useState(deal.temperature || 0);
-  const [hotVotes, setHotVotes] = useState(deal.hot_votes || 0);
-  const [coldVotes, setColdVotes] = useState(deal.cold_votes || 0);
 
   async function vote(type) {
-    if (!user) {
-      alert('יש להתחבר כדי להצביע');
-      return;
-    }
+    if (!user) { alert('יש להתחבר כדי להצביע'); return; }
     if (loading) return;
     setLoading(true);
     try {
       const { data } = await api.post(`/votes/${deal.id}`, { vote_type: type });
       setTemp(data.temperature);
-      setHotVotes(data.hot_votes);
-      setColdVotes(data.cold_votes);
       setUserVote(userVote === type ? null : type);
       onChange?.(data);
     } catch (err) {
@@ -29,7 +30,8 @@ export default function TemperatureVote({ deal, user, onChange }) {
     }
   }
 
-  const tempClass = temp > 50 ? 'hot' : temp < -10 ? 'cold' : 'neutral';
+  const cls = getTempClass(temp);
+  const displayTemp = temp > 0 ? `+${Math.round(temp)}°` : `${Math.round(temp)}°`;
 
   return (
     <div className="temp-vote">
@@ -39,18 +41,21 @@ export default function TemperatureVote({ deal, user, onChange }) {
         title="מבצע חם"
         disabled={loading}
       >
-        🔥
+        <ThumbsUp size={14} />
       </button>
-      <span className={`temp-value ${tempClass}`}>
-        {temp > 0 ? '+' : ''}{Math.round(temp)}°
-      </span>
+
+      <div className={`temp-chip ${cls}`}>
+        {cls === 'hot' && <Flame size={12} />}
+        {displayTemp}
+      </div>
+
       <button
         className={`vote-btn ${userVote === 'cold' ? 'active-cold' : ''}`}
         onClick={() => vote('cold')}
         title="מבצע קר"
         disabled={loading}
       >
-        🥶
+        <ThumbsDown size={14} />
       </button>
     </div>
   );
