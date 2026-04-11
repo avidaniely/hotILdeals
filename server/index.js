@@ -27,6 +27,7 @@ app.use('/api/votes', require('./routes/votes'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/messages', require('./routes/messages'));
+app.use('/api/deals/:dealId/comments', require('./routes/comments'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 

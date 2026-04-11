@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Store, ExternalLink, Tag } from 'lucide-react';
 import api from '../api';
 import TemperatureVote from '../components/TemperatureVote';
+import Comments from '../components/Comments';
 
 function formatPrice(price) {
   if (price == null) return null;
@@ -83,6 +84,8 @@ export default function DealDetail({ user }) {
           </div>
         </div>
       </div>
+
+      <Comments dealId={deal.id} user={user} />
     </div>
   );
 }

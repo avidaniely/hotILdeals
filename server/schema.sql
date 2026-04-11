@@ -56,6 +56,17 @@ CREATE INDEX IF NOT EXISTS idx_votes_created_deal ON votes (created_at, deal_id,
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS is_banned TINYINT(1) DEFAULT 0;
 
+CREATE TABLE IF NOT EXISTS comments (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  deal_id    INT NOT NULL,
+  user_id    INT NOT NULL,
+  body       TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (deal_id) REFERENCES deals(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_comments_deal (deal_id, created_at)
+);
+
 CREATE TABLE IF NOT EXISTS messages (
   id           INT AUTO_INCREMENT PRIMARY KEY,
   sender_id    INT NOT NULL,
