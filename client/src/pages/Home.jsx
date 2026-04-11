@@ -10,7 +10,7 @@ export default function Home({ user }) {
   const [pages, setPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const tab = params.get('tab') || 'new';
+  const tab = params.get('tab') || 'trends';
   const category = params.get('category') || '';
   const search = params.get('search') || '';
   const page = parseInt(params.get('page') || '1');
@@ -50,9 +50,9 @@ export default function Home({ user }) {
 
       {deals.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🏷️</div>
-          <h3>לא נמצאו מבצעים</h3>
-          <p>נסה לשנות קטגוריה או לחפש משהו אחר.</p>
+          <div className="empty-state-icon">{tab === 'trends' ? '📈' : '🏷️'}</div>
+          <h3>{tab === 'trends' ? 'אין מבצעים בטרנד כרגע' : 'לא נמצאו מבצעים'}</h3>
+          <p>{tab === 'trends' ? 'מבצעים שמקבלים הרבה הצבעות יופיעו כאן. חזור מאוחר יותר!' : 'נסה לשנות קטגוריה או לחפש משהו אחר.'}</p>
         </div>
       ) : (
         <div className="deal-list">

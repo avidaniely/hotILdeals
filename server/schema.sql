@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS deals (
   temperature FLOAT DEFAULT 0,
   hot_votes INT DEFAULT 0,
   cold_votes INT DEFAULT 0,
+  trend_score FLOAT DEFAULT 0,
   user_id INT,
   source ENUM('user','scraper') DEFAULT 'user',
   status ENUM('active','expired','hidden') DEFAULT 'active',
@@ -49,6 +50,8 @@ CREATE TABLE IF NOT EXISTS votes (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (deal_id) REFERENCES deals(id) ON DELETE CASCADE
 );
+
+CREATE INDEX IF NOT EXISTS idx_votes_created_deal ON votes (created_at, deal_id, vote_type);
 
 INSERT IGNORE INTO categories (name, slug, icon) VALUES
   ('אלקטרוניקה', 'electronics', '💻'),

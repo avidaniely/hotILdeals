@@ -37,12 +37,16 @@ router.get('/', optionalAuth, async (req, res) => {
   if (tab === 'hottest') orderBy = 'deals.temperature DESC';
   else if (tab === 'hot') orderBy = 'deals.temperature DESC';
   else if (tab === 'highlights') orderBy = 'deals.hot_votes DESC';
+  else if (tab === 'trends') orderBy = 'deals.trend_score DESC';
 
   let where = "deals.status = 'active'";
   const params = [];
 
   if (tab === 'hot') {
     where += ' AND deals.temperature > 50';
+  }
+  if (tab === 'trends') {
+    where += ' AND deals.trend_score >= 2.0';
   }
   if (category) {
     where += ' AND categories.slug = ?';

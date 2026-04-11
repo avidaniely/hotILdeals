@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Tag, Flame, LayoutGrid, X, ChevronLeft } from 'lucide-react';
+import { TrendingUp, Flame, LayoutGrid, X, ChevronLeft } from 'lucide-react';
 import api from '../api';
 
 const TABS = [
-  { key: 'new',     label: 'טרנדים',  icon: Tag },
+  { key: 'trends',  label: 'טרנדים',  icon: TrendingUp },
   { key: 'hottest', label: 'הכי חם',  icon: Flame },
   { key: 'all',     label: 'הכל',     icon: null },
 ];
@@ -13,7 +13,7 @@ export default function SubNav() {
   const [params, setParams] = useSearchParams();
   const [categories, setCategories] = useState([]);
   const [panelOpen, setPanelOpen] = useState(false);
-  const activeTab = params.get('tab') || 'new';
+  const activeTab = params.get('tab') || 'trends';
   const activeCategory = params.get('category') || '';
 
   useEffect(() => {

@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { initDb } = require('./db');
 const { startScheduler } = require('./agent/dealCollector');
+const { startTrendScheduler } = require('./agent/trendCalculator');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,7 @@ async function start() {
       console.log(`HotILDeals server running on port ${PORT}`);
     });
     startScheduler();
+    startTrendScheduler();
   } catch (err) {
     console.error('Failed to start server:', err);
     process.exit(1);
