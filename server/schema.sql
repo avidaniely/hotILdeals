@@ -54,6 +54,21 @@ CREATE TABLE IF NOT EXISTS votes (
 
 CREATE INDEX IF NOT EXISTS idx_votes_created_deal ON votes (created_at, deal_id, vote_type);
 
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_banned TINYINT(1) DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS messages (
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id    INT NOT NULL,
+  receiver_id  INT NOT NULL,
+  body         TEXT NOT NULL,
+  is_read      TINYINT(1) DEFAULT 0,
+  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_id)   REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_msg_receiver (receiver_id, is_read),
+  INDEX idx_msg_thread   (sender_id, receiver_id, created_at)
+);
+
 INSERT IGNORE INTO categories (name, slug, icon) VALUES
   ('אלקטרוניקה', 'electronics', '💻'),
   ('אופנה', 'fashion', '👗'),

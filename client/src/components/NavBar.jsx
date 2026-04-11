@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Inbox, Plus, Flame } from 'lucide-react';
+import { Menu, Search, Bell, Inbox, Plus, Flame, Shield } from 'lucide-react';
 
-export default function NavBar({ user, onLogout }) {
+export default function NavBar({ user, onLogout, unreadCount = 0 }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
@@ -48,13 +48,25 @@ export default function NavBar({ user, onLogout }) {
             <Bell size={17} />
             <span>התראות</span>
           </button>
-          <button className="navbar-action-item">
-            <Inbox size={17} />
+
+          <Link to="/inbox" className="navbar-action-item">
+            <span style={{ position: 'relative', display: 'inline-flex' }}>
+              <Inbox size={17} />
+              {unreadCount > 0 && (
+                <span className="navbar-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+              )}
+            </span>
             <span>הודעות</span>
-          </button>
+          </Link>
 
           {user ? (
             <>
+              {user.role === 'admin' && (
+                <Link to="/admin" className="navbar-action-item" title="פאנל ניהול">
+                  <Shield size={17} />
+                  <span>ניהול</span>
+                </Link>
+              )}
               <button className="navbar-action-item" onClick={onLogout} title="התנתק">
                 <span className="navbar-flag">🇮🇱</span>
                 <span>{user.username}</span>

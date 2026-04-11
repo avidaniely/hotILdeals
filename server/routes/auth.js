@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      'SELECT id, username, email, role, created_at FROM users WHERE id = ?',
+      'SELECT id, username, email, role, is_banned, created_at FROM users WHERE id = ?',
       [req.user.id]
     );
     if (!rows[0]) return res.status(404).json({ error: 'User not found' });
