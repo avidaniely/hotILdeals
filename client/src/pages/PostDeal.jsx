@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Upload, X, Link as LinkIcon } from 'lucide-react';
 import api from '../api';
 
 export default function PostDeal({ user }) {
@@ -7,9 +8,14 @@ export default function PostDeal({ user }) {
     title: '', description: '', price: '', original_price: '',
     merchant: '', url: '', image_url: '', category_id: '', expires_at: '',
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageMode, setImageMode] = useState('file'); // 'file' | 'url'
+  const [dragging, setDragging] = useState(false);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,13 +26,45 @@ export default function PostDeal({ user }) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   }
 
+  function handleFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) { setError('גודל התמונה לא יעלה על 5MB'); return; }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setError('');
+  }
+
+  function handleFileInput(e) {
+    handleFile(e.target.files[0]);
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    setDragging(false);
+    handleFile(e.dataTransfer.files[0]);
+  }
+
+  function clearImage() {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!user) { navigate('/login'); return; }
     setError('');
     setLoading(true);
     try {
-      const { data } = await api.post('/deals', form);
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => { if (v) fd.append(k, v); });
+      if (imageMode === 'file' && imageFile) {
+        fd.append('image', imageFile);
+      }
+
+      const { data } = await api.post('/deals', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       navigate(`/deals/${data.id}`);
     } catch (err) {
       setError(err.response?.data?.error || 'פרסום המבצע נכשל');
@@ -85,10 +123,52 @@ export default function PostDeal({ user }) {
               </select>
             </div>
           </div>
+
+          {/* Image upload */}
           <div className="form-group">
-            <label>קישור לתמונה (אופציונלי)</label>
-            <input type="url" value={form.image_url} onChange={set('image_url')} placeholder="https://..." />
+            <label>תמונה (אופציונלי)</label>
+            <div className="image-mode-tabs">
+              <button type="button" className={`image-mode-tab ${imageMode === 'file' ? 'active' : ''}`} onClick={() => { setImageMode('file'); setForm(f => ({ ...f, image_url: '' })); }}>
+                <Upload size={13} /> העלאת קובץ
+              </button>
+              <button type="button" className={`image-mode-tab ${imageMode === 'url' ? 'active' : ''}`} onClick={() => { setImageMode('url'); clearImage(); }}>
+                <LinkIcon size={13} /> קישור לתמונה
+              </button>
+            </div>
+
+            {imageMode === 'file' ? (
+              imagePreview ? (
+                <div className="image-preview-wrap">
+                  <img src={imagePreview} alt="תצוגה מקדימה" className="image-preview" />
+                  <button type="button" className="image-preview-remove" onClick={clearImage}>
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className={`image-dropzone ${dragging ? 'dragging' : ''}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={handleDrop}
+                >
+                  <Upload size={28} color="var(--text-light)" />
+                  <span>גרור תמונה לכאן או לחץ לבחירה</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-light)' }}>JPG, PNG, WEBP — עד 5MB</span>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleFileInput}
+                  />
+                </div>
+              )
+            ) : (
+              <input type="url" value={form.image_url} onChange={set('image_url')} placeholder="https://example.com/image.jpg" />
+            )}
           </div>
+
           <div className="form-group">
             <label>תיאור</label>
             <textarea value={form.description} onChange={set('description')} placeholder="תאר את המבצע..." />

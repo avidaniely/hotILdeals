@@ -755,6 +755,31 @@ input, select, textarea { font-family: inherit; }
   .inbox-sidebar { width: 100%; height: 220px; min-width: unset; border-left: none; border-bottom: 1px solid var(--border); }
 }
 
+/* ── IMAGE UPLOAD ── */
+.image-mode-tabs { display: flex; gap: 0; margin-bottom: 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; width: fit-content; }
+.image-mode-tab {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+  font-size: 13px; font-weight: 600; color: var(--text-muted); background: #fff;
+  border: none; cursor: pointer; transition: background 0.12s, color 0.12s;
+}
+.image-mode-tab:first-child { border-left: 1px solid var(--border); }
+.image-mode-tab.active { background: var(--brand); color: #fff; }
+.image-dropzone {
+  border: 2px dashed var(--border); border-radius: var(--radius); padding: 32px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  color: var(--text-muted); font-size: 13px; text-align: center;
+}
+.image-dropzone:hover, .image-dropzone.dragging { border-color: var(--brand); background: var(--brand-muted); }
+.image-preview-wrap { position: relative; display: inline-block; }
+.image-preview { max-height: 200px; max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); display: block; }
+.image-preview-remove {
+  position: absolute; top: -8px; left: -8px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--hot); color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
 /* ── NAVBAR BADGE ── */
 .navbar-badge {
   position: absolute; top: -5px; left: -5px;
