@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS deals (
   hot_votes INT DEFAULT 0,
   cold_votes INT DEFAULT 0,
   trend_score FLOAT DEFAULT 0,
+  hottest_score FLOAT DEFAULT 0,
   user_id INT,
   source ENUM('user','scraper') DEFAULT 'user',
   status ENUM('active','expired','hidden') DEFAULT 'active',

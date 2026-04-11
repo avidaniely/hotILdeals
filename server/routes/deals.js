@@ -34,7 +34,7 @@ router.get('/', optionalAuth, async (req, res) => {
   const offset = (parseInt(page) - 1) * PAGE_SIZE;
 
   let orderBy = 'deals.created_at DESC';
-  if (tab === 'hottest') orderBy = 'deals.temperature DESC';
+  if (tab === 'hottest') orderBy = 'deals.hottest_score DESC';
   else if (tab === 'hot') orderBy = 'deals.temperature DESC';
   else if (tab === 'highlights') orderBy = 'deals.hot_votes DESC';
   else if (tab === 'trends') orderBy = 'deals.trend_score DESC';
@@ -47,6 +47,9 @@ router.get('/', optionalAuth, async (req, res) => {
   }
   if (tab === 'trends') {
     where += ' AND deals.trend_score >= 2.0';
+  }
+  if (tab === 'hottest') {
+    where += ' AND deals.hottest_score >= 1.5';
   }
   if (category) {
     where += ' AND categories.slug = ?';

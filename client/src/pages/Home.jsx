@@ -50,9 +50,9 @@ export default function Home({ user }) {
 
       {deals.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">{tab === 'trends' ? '📈' : '🏷️'}</div>
-          <h3>{tab === 'trends' ? 'אין מבצעים בטרנד כרגע' : 'לא נמצאו מבצעים'}</h3>
-          <p>{tab === 'trends' ? 'מבצעים שמקבלים הרבה הצבעות יופיעו כאן. חזור מאוחר יותר!' : 'נסה לשנות קטגוריה או לחפש משהו אחר.'}</p>
+          <div className="empty-state-icon">{tab === 'trends' ? '📈' : tab === 'hottest' ? '🔥' : '🏷️'}</div>
+          <h3>{tab === 'trends' ? 'אין מבצעים בטרנד כרגע' : tab === 'hottest' ? 'אין מבצעים חמים כרגע' : 'לא נמצאו מבצעים'}</h3>
+          <p>{tab === 'trends' ? 'מבצעים שמקבלים הרבה הצבעות יופיעו כאן. חזור מאוחר יותר!' : tab === 'hottest' ? 'מבצעים שצברו הצבעות ב-48 השעות האחרונות יופיעו כאן.' : 'נסה לשנות קטגוריה או לחפש משהו אחר.'}</p>
         </div>
       ) : (
         <div className="deal-list">
