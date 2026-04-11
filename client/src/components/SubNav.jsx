@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Sparkles, Flame, TrendingUp, Clock, ChevronDown } from 'lucide-react';
+import { LayoutGrid, Tag, Gift, Flame, MessageSquare, Star, ChevronDown } from 'lucide-react';
 import api from '../api';
 
 const TABS = [
-  { key: 'new',        label: 'חדש',     icon: Clock },
-  { key: 'highlights', label: 'נבחרים',  icon: Sparkles },
-  { key: 'hottest',    label: 'הכי חם',  icon: TrendingUp },
-  { key: 'hot',        label: 'חם',      icon: Flame },
+  { key: 'highlights', label: 'קטגוריות',      icon: LayoutGrid, dropdown: true },
+  { key: 'new',        label: 'מבצעים',         icon: Tag },
+  { key: 'hot',        label: 'פריביז',          icon: Gift },
+  { key: 'hottest',    label: 'הכי חם',          icon: Flame },
+  { key: 'discuss',    label: 'דיונים',          icon: MessageSquare },
+  { key: 'club',       label: 'קלאב',            icon: Star },
 ];
 
 export default function SubNav() {
@@ -38,7 +40,7 @@ export default function SubNav() {
   return (
     <div className="subnav">
       <div className="subnav-inner">
-        {TABS.map((t, i) => {
+        {TABS.map((t) => {
           const Icon = t.icon;
           return (
             <button
@@ -46,13 +48,12 @@ export default function SubNav() {
               className={`subnav-tab ${activeTab === t.key ? 'active' : ''}`}
               onClick={() => setTab(t.key)}
             >
-              <span className="subnav-tab-icon"><Icon size={14} /></span>
+              <Icon size={14} />
               {t.label}
+              {t.dropdown && <ChevronDown size={12} />}
             </button>
           );
         })}
-
-        <div className="subnav-divider" />
 
         {categories.length > 0 && (
           <select
@@ -62,9 +63,7 @@ export default function SubNav() {
           >
             <option value="">כל הקטגוריות</option>
             {categories.map((c) => (
-              <option key={c.id} value={c.slug}>
-                {c.icon} {c.name}
-              </option>
+              <option key={c.id} value={c.slug}>{c.icon} {c.name}</option>
             ))}
           </select>
         )}

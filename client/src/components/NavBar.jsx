@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Bell, User, LogOut, PlusCircle, Menu, Flame } from 'lucide-react';
+import { Menu, Search, Bell, Inbox, Plus, Flame } from 'lucide-react';
 
-export default function NavBar({ user, onLogout, onSearch }) {
+export default function NavBar({ user, onLogout }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
   function handleSearch(e) {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`/?search=${encodeURIComponent(query.trim())}`);
-      onSearch?.(query.trim());
-    }
+    if (query.trim()) navigate(`/?search=${encodeURIComponent(query.trim())}`);
   }
 
   return (
@@ -20,20 +17,24 @@ export default function NavBar({ user, onLogout, onSearch }) {
 
         {/* Logo */}
         <Link to="/" className="navbar-logo">
-          <Flame size={20} color="#f7641b" style={{ marginLeft: 4, flexShrink: 0 }} />
-          <span className="navbar-logo-hot">hot</span>
-          <span className="navbar-logo-il">IL</span>
-          <span style={{ color: '#fff' }}>deals</span>
+          <Flame size={28} className="navbar-logo-flame" />
+          <span className="navbar-logo-text">hot<span className="navbar-logo-il">IL</span>deals</span>
         </Link>
 
-        {/* Search */}
+        {/* Menu pill */}
+        <button className="navbar-menu-btn">
+          <Menu size={16} />
+          תפריט
+        </button>
+
+        {/* Search — grows to fill middle */}
         <div className="navbar-search">
           <form onSubmit={handleSearch}>
-            <div className="navbar-search-inner">
-              <span className="navbar-search-icon"><Search size={15} /></span>
+            <div className="navbar-search-wrap">
+              <Search size={16} className="navbar-search-icon" />
               <input
                 type="text"
-                placeholder="חיפוש מבצעים, מותגים, מוצרים..."
+                placeholder="חיפוש מותגים, מוצרים ועוד..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -41,34 +42,42 @@ export default function NavBar({ user, onLogout, onSearch }) {
           </form>
         </div>
 
-        {/* Actions */}
+        {/* Right actions */}
         <div className="navbar-actions">
+          <button className="navbar-action-item">
+            <Bell size={17} />
+            <span>התראות</span>
+          </button>
+          <button className="navbar-action-item">
+            <Inbox size={17} />
+            <span>הודעות</span>
+          </button>
+
           {user ? (
             <>
-              <span className="navbar-username">{user.username}</span>
-              <button className="nav-icon-btn" title="התראות"><Bell size={18} /></button>
-              <Link to="/post-deal" className="nav-post-btn">
-                <PlusCircle size={16} />
-                פרסם מבצע
-              </Link>
-              <button className="nav-icon-btn" title="התנתק" onClick={onLogout}>
-                <LogOut size={18} />
+              <button className="navbar-action-item" onClick={onLogout} title="התנתק">
+                <span className="navbar-flag">🇮🇱</span>
+                <span>{user.username}</span>
               </button>
+              <Link to="/post-deal" className="navbar-post-btn">
+                <Plus size={15} strokeWidth={2.5} />
+                פרסם
+              </Link>
             </>
           ) : (
             <>
-              <Link to="/login" className="nav-text-btn">
-                <User size={15} />
-                כניסה
+              <Link to="/login" className="navbar-action-item">
+                <span className="navbar-flag">🇮🇱</span>
+                <span>כניסה</span>
               </Link>
-              <Link to="/register" className="nav-text-btn primary">הרשמה</Link>
-              <Link to="/post-deal" className="nav-post-btn">
-                <PlusCircle size={16} />
-                פרסם מבצע
+              <Link to="/post-deal" className="navbar-post-btn">
+                <Plus size={15} strokeWidth={2.5} />
+                פרסם
               </Link>
             </>
           )}
         </div>
+
       </div>
     </nav>
   );
