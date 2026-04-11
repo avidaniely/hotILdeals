@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Inbox, Plus, Flame, Shield } from 'lucide-react';
+import { Search, Bell, Inbox, Plus, Flame, Shield } from 'lucide-react';
 
 export default function NavBar({ user, onLogout, unreadCount = 0 }) {
   const [query, setQuery] = useState('');
@@ -20,12 +20,6 @@ export default function NavBar({ user, onLogout, unreadCount = 0 }) {
           <Flame size={28} className="navbar-logo-flame" />
           <span className="navbar-logo-text">hot<span className="navbar-logo-il">IL</span>deals</span>
         </Link>
-
-        {/* Menu pill */}
-        <button className="navbar-menu-btn">
-          <Menu size={16} />
-          תפריט
-        </button>
 
         {/* Search — grows to fill middle */}
         <div className="navbar-search">
