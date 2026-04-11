@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Bell, User, LogOut, PlusCircle, Menu, Flame } from 'lucide-react';
+import { Search, Bell, LogOut, PlusCircle } from 'lucide-react';
 
-export default function NavBar({ user, onLogout, onSearch }) {
+export default function NavBar({ user, onLogout }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
   function handleSearch(e) {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`/?search=${encodeURIComponent(query.trim())}`);
-      onSearch?.(query.trim());
-    }
+    if (query.trim()) navigate(`/?search=${encodeURIComponent(query.trim())}`);
   }
 
   return (
@@ -20,16 +17,19 @@ export default function NavBar({ user, onLogout, onSearch }) {
 
         {/* Logo */}
         <Link to="/" className="navbar-logo">
-          <Flame size={20} color="#f7641b" style={{ marginLeft: 4, flexShrink: 0 }} />
-          <span className="navbar-logo-hot">hot</span>
-          <span className="navbar-logo-il">IL</span>
-          <span style={{ color: '#fff' }}>deals</span>
+          <div className="navbar-logo-flame">🔥</div>
+          <div>
+            <div className="navbar-logo-text">
+              <em>hot</em>deals
+            </div>
+          </div>
+          <span className="navbar-logo-tag">IL</span>
         </Link>
 
         {/* Search */}
         <div className="navbar-search">
           <form onSubmit={handleSearch}>
-            <div className="navbar-search-inner">
+            <div className="navbar-search-wrap">
               <span className="navbar-search-icon"><Search size={15} /></span>
               <input
                 type="text"
@@ -45,25 +45,24 @@ export default function NavBar({ user, onLogout, onSearch }) {
         <div className="navbar-actions">
           {user ? (
             <>
-              <span className="navbar-username">{user.username}</span>
-              <button className="nav-icon-btn" title="התראות"><Bell size={18} /></button>
-              <Link to="/post-deal" className="nav-post-btn">
-                <PlusCircle size={16} />
+              <button className="nav-icon-btn" title="התראות"><Bell size={17} /></button>
+              <div className="navbar-avatar" title={user.username}>
+                {user.username[0].toUpperCase()}
+              </div>
+              <Link to="/post-deal" className="nav-pill-btn solid">
+                <PlusCircle size={15} />
                 פרסם מבצע
               </Link>
               <button className="nav-icon-btn" title="התנתק" onClick={onLogout}>
-                <LogOut size={18} />
+                <LogOut size={17} />
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="nav-text-btn">
-                <User size={15} />
-                כניסה
-              </Link>
-              <Link to="/register" className="nav-text-btn primary">הרשמה</Link>
-              <Link to="/post-deal" className="nav-post-btn">
-                <PlusCircle size={16} />
+              <Link to="/login" className="nav-pill-btn ghost">כניסה</Link>
+              <Link to="/register" className="nav-pill-btn ghost">הרשמה</Link>
+              <Link to="/post-deal" className="nav-pill-btn solid">
+                <PlusCircle size={15} />
                 פרסם מבצע
               </Link>
             </>
