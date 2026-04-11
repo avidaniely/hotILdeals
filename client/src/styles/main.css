@@ -965,3 +965,105 @@ input, select, textarea { font-family: inherit; }
 .comment-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 .comment-guest { font-size: 13.5px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 14px; }
 .comment-guest a { color: var(--brand); font-weight: 600; }
+
+/* ─── Deal Hunter / Pending Queue ─────────────────────────────────────────── */
+.pending-toolbar {
+  display: flex; align-items: center; gap: 8px; padding: 12px 0 16px;
+  flex-wrap: wrap;
+}
+.pending-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  padding-bottom: 32px;
+}
+.pending-card {
+  background: var(--bg-card); border: 1.5px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: box-shadow 0.15s;
+}
+.pending-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.pending-card-image { width: 100%; height: 160px; overflow: hidden; background: var(--bg-alt); }
+.pending-card-image img { width: 100%; height: 100%; object-fit: cover; }
+.pending-card-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.pending-card-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.pending-card-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; margin: 0; }
+.pending-card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+.pending-card-price { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--brand); }
+.pending-orig-price { font-size: 12px; color: var(--text-light); text-decoration: line-through; }
+.pending-merchant { font-size: 11px; color: var(--text-light); background: var(--bg-alt); padding: 2px 7px; border-radius: 10px; }
+.pending-cat-badge { font-size: 11px; background: var(--bg-alt); color: var(--text-muted); padding: 2px 8px; border-radius: 10px; }
+.pending-card-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 6px; border-top: 1px solid var(--border); }
+.pending-card-actions a.admin-btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* Persona badges */
+.persona-badge {
+  display: inline-flex; align-items: center; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px; letter-spacing: 0.2px;
+}
+.persona-sarcastic  { background: #f3e8ff; color: #7c3aed; }
+.persona-tech       { background: #dbeafe; color: #1d4ed8; }
+.persona-budget     { background: #dcfce7; color: #16a34a; }
+.persona-influencer { background: #fce7f3; color: #be185d; }
+
+/* Hunter score badge */
+.hunter-score {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+}
+.score-high { background: #fef3c7; color: #b45309; }
+.score-mid  { background: #e0f2fe; color: #0369a1; }
+.score-low  { background: var(--bg-alt); color: var(--text-muted); }
+
+/* Pending edit form */
+.pending-edit-form { display: flex; flex-direction: column; gap: 6px; }
+.pending-edit-form input,
+.pending-edit-form textarea,
+.pending-edit-form select {
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 7px 10px; font-size: 13px; font-family: inherit; outline: none;
+  transition: border-color 0.15s;
+}
+.pending-edit-form input:focus,
+.pending-edit-form textarea:focus,
+.pending-edit-form select:focus { border-color: var(--brand); }
+
+/* Import modal */
+.import-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+}
+.import-modal {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+}
+.import-modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.import-modal-header button {
+  background: none; border: none; cursor: pointer; color: var(--text-muted);
+  display: flex; align-items: center; padding: 2px;
+}
+.import-textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px; font-size: 12px; font-family: monospace; resize: vertical;
+  outline: none; box-sizing: border-box;
+}
+.import-textarea:focus { border-color: var(--brand); }
+
+/* Hunter toast */
+.hunter-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--brand-dark); color: #fff; padding: 10px 22px;
+  border-radius: 20px; font-size: 13.5px; font-weight: 600;
+  z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  animation: toast-in 0.25s ease;
+}
+@keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+@media (max-width: 640px) {
+  .pending-grid { grid-template-columns: 1fr; }
+}

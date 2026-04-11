@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS deals (
   hottest_score FLOAT DEFAULT 0,
   user_id INT,
   source ENUM('user','scraper') DEFAULT 'user',
-  status ENUM('active','expired','hidden') DEFAULT 'active',
+  status ENUM('active','expired','hidden','pending') DEFAULT 'active',
+  hunter_score FLOAT DEFAULT NULL,
+  persona ENUM('sarcastic','techNerd','budget','influencer') DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   expires_at TIMESTAMP NULL,
   FOREIGN KEY (category_id) REFERENCES categories(id),
@@ -79,6 +81,10 @@ CREATE TABLE IF NOT EXISTS messages (
   INDEX idx_msg_receiver (receiver_id, is_read),
   INDEX idx_msg_thread   (sender_id, receiver_id, created_at)
 );
+
+-- System bot user for auto-seeding hot votes on approved deals
+INSERT IGNORE INTO users (id, username, email, password_hash, role)
+VALUES (1, 'hotilbot', 'bot@hotildeals.local', '', 'admin');
 
 INSERT IGNORE INTO categories (name, slug, icon) VALUES
   ('אלקטרוניקה', 'electronics', '💻'),
