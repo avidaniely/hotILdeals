@@ -274,11 +274,15 @@ router.patch('/deals/:id/reject', requireAuth, requireAdmin, async (req, res) =>
   }
 });
 
-// POST /api/admin/import-deals — paste JSON array from manual Claude/OpenAI runs
+// POST /api/admin/import-deals — paste JSON array from OpenAI/Claude
+// Expects: { deals: [ { title, price, original_price, discountPct, url, merchant, category, image, description } ] }
+// OR just an array directly: [ { ... } ]
 router.post('/import-deals', requireAuth, requireAdmin, async (req, res) => {
-  const { deals } = req.body;
+  const { downloadImage } = require('../agent/imageDownloader');
+
+  let deals = req.body.deals || req.body;
   if (!Array.isArray(deals) || deals.length === 0) {
-    return res.status(400).json({ error: 'Expected { deals: [...] }' });
+    return res.status(400).json({ error: 'Expected array of deals or { deals: [...] }' });
   }
 
   const CATEGORY_SLUG_MAP = {
@@ -291,25 +295,63 @@ router.post('/import-deals', requireAuth, requireAdmin, async (req, res) => {
   cats.forEach(c => { CATEGORY_SLUG_MAP[c.slug] = c.id; });
 
   let saved = 0;
-  for (const d of deals) {
-    if (!d.title || !d.url) continue;
-    const [existing] = await pool.execute('SELECT id FROM deals WHERE url = ?', [d.url]);
-    if (existing[0]) continue;
+  let errors = [];
 
-    const categoryId = CATEGORY_SLUG_MAP[d.category] || CATEGORY_SLUG_MAP['other'];
+  for (const d of deals) {
+    if (!d.title || !d.url) {
+      errors.push({ title: d.title, error: 'Missing title or URL' });
+      continue;
+    }
+
     try {
-      await pool.execute(
-        `INSERT INTO deals (title, description, price, original_price, merchant, url, category_id, source, status, user_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 'scraper', 'pending', 1)`,
-        [d.title, d.description || '', d.price || null, d.original_price || null, d.merchant || '', d.url, categoryId]
+      // Deduplicate by URL
+      const [existing] = await pool.execute('SELECT id FROM deals WHERE url = ?', [d.url]);
+      if (existing[0]) {
+        console.log('[import] Skipped (duplicate):', d.title);
+        continue;
+      }
+
+      // Download image locally
+      let imagePath = null;
+      if (d.image) {
+        imagePath = await downloadImage(d.image, `import_${Date.now()}`);
+      }
+
+      // Validate category
+      const categoryId = CATEGORY_SLUG_MAP[d.category] || CATEGORY_SLUG_MAP['other'];
+
+      // Calculate hunter_score from discountPct
+      const discountPct = d.discountPct || 0;
+      const hunterScore = discountPct * 2 + ((d.original_price || 0) > 500 ? 10 : 5);
+
+      // Insert deal
+      const [result] = await pool.execute(
+        `INSERT INTO deals
+           (title, description, price, original_price, merchant, url, image_path,
+            category_id, source, status, hunter_score, user_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'scraper', 'pending', ?, 1)`,
+        [
+          d.title,
+          d.description || '',
+          d.price || null,
+          d.original_price || null,
+          d.merchant || 'Unknown',
+          d.url,
+          imagePath,
+          categoryId,
+          hunterScore,
+        ]
       );
+
       saved++;
+      console.log('[import] Saved deal #' + result.insertId + ':', d.title.slice(0, 50));
     } catch (err) {
-      console.error('[import]', err.message);
+      console.error('[import] Error:', err.message);
+      errors.push({ title: d.title, error: err.message });
     }
   }
 
-  res.json({ saved });
+  res.json({ saved, total: deals.length, errors: errors.length > 0 ? errors : undefined });
 });
 
 // POST /api/admin/run-hunter — manual trigger
