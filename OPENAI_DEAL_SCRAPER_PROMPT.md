@@ -55,7 +55,30 @@ NOW: Browse this site and extract the top deals:
 
 ---
 
-## Example: Running Against KSP
+## Israeli E-Commerce Sites to Scrape
+
+Use these URLs with the prompt. Each site has different deals:
+
+| Site | Category | URL | Notes |
+|---|---|---|---|
+| **KSP** | Electronics, Computers | `https://ksp.co.il/web/cat/compSales` | Largest Israeli electronics retailer, daily deals |
+| **Bug** | Electronics, Gaming | `https://www.bug.co.il/content/deals` | Tech & gaming focus, competitive prices |
+| **Zap** | Electronics, Appliances | `https://www.zap.co.il/flash-sales.aspx` | Appliances, large electronics |
+| **Shufersal** | Groceries, Food | `https://www.shufersal.co.il/online/he/S/c/SA_ROOT?sort=relevance&filter=onSale` | Supermarket, weekly specials |
+| **Rami Levy** | Groceries, Food | `https://www.rami-levy.co.il/online/he/promotions` | Supermarket, discount section |
+| **iShop** | Apple Products | `https://www.ishop.co.il/Promotions` | Apple authorized, sales events |
+| **Fox** | Fashion, Home | `https://www.fox.co.il/sale` | Clothing, home decor, seasonal sales |
+| **Quentin** | Fashion, Accessories | `https://www.quentin.co.il/on-sale` | Fashion brands, outlet |
+| **Max** | Fashion, Sportswear | `https://www.max.co.il/en/special-offers` | Sportswear, athletic brands |
+| **Decathlon Israel** | Sports, Outdoor | `https://www.decathlon.co.il/en/c/3-sale` | Sports equipment, outdoor gear |
+| **Office Depot** | Office, School | `https://www.officedepot.co.il/default.aspx?Action=PromoPage&TierId=1` | Office supplies, back to school |
+| **Juno** | Jewelry, Watches | `https://www.juno.co.il/on-sale` | Jewelry, watches, luxury items |
+| **Steimatzky** | Books, Media | `https://www.steimatzky.co.il/promotions` | Books, ebooks, gifts |
+| **Wolt** | Food Delivery | `https://wolt.com/en/isr/tel-aviv/restaurant` | Restaurant deals, delivery promos |
+
+---
+
+## Example: Running Against KSP (Electronics)
 
 **You ask ChatGPT:**
 ```
@@ -94,6 +117,86 @@ https://ksp.co.il/web/cat/compSales
     "category": "electronics",
     "image": "https://ksp.co.il/images/samsung-monitor.jpg",
     "description": "מסך משחק 32 אינץ' עם רענון של 144Hz ו-1ms זמן תגובה. מעולה למשחקנים ולמי שעובד עם גרפיקה. כולל רכיבים מהודקים ואחריות."
+  }
+]
+```
+
+---
+
+## Example: Running Against Shufersal (Groceries)
+
+**You ask ChatGPT:**
+```
+[full prompt above]
+
+NOW: Browse this site and extract the top deals:
+https://www.shufersal.co.il/online/he/S/c/SA_ROOT?sort=relevance&filter=onSale
+```
+
+**ChatGPT returns JSON like:**
+```json
+[
+  {
+    "title": "תה ליפטון מבחר טעמים",
+    "price": 12.90,
+    "original_price": 18.90,
+    "discountPct": 32,
+    "url": "https://www.shufersal.co.il/online/he/products/...",
+    "merchant": "שופרסל",
+    "category": "food-drink",
+    "image": "https://www.shufersal.co.il/images/tea.jpg",
+    "description": "תה ליפטון 20 שקיות, מגוון טעמים. הנחה ענקית! בקניה של 2 יחידות זול עוד יותר."
+  },
+  {
+    "title": "יוגורט דנון 8 עציצים",
+    "price": 7.50,
+    "original_price": 10.90,
+    "discountPct": 31,
+    "url": "https://www.shufersal.co.il/online/he/products/...",
+    "merchant": "שופרסל",
+    "category": "food-drink",
+    "image": "https://www.shufersal.co.il/images/yogurt.jpg",
+    "description": "יוגורט דנון טרי, 8 עציצים. מטורף!! הנחה גדולה בשבוע הזה בלבד."
+  }
+]
+```
+
+---
+
+## Example: Running Against Fox (Fashion)
+
+**You ask ChatGPT:**
+```
+[full prompt above]
+
+NOW: Browse this site and extract the top deals:
+https://www.fox.co.il/sale
+```
+
+**ChatGPT returns JSON like:**
+```json
+[
+  {
+    "title": "חולצת פוקס קטן לנשים",
+    "price": 89.90,
+    "original_price": 149.90,
+    "discountPct": 40,
+    "url": "https://www.fox.co.il/product/...",
+    "merchant": "Fox",
+    "category": "fashion",
+    "image": "https://www.fox.co.il/images/tshirt-women.jpg",
+    "description": "חולצה קלאסית של פוקס בצבעים שונים, 100% כותנה. אממ כאילו המחיר הזה לא ממש קיים, תופסי את ההנחה עכשיו!"
+  },
+  {
+    "title": "ג'ינס סקיני כחול כהה",
+    "price": 139.90,
+    "original_price": 249.90,
+    "discountPct": 44,
+    "url": "https://www.fox.co.il/product/...",
+    "merchant": "Fox",
+    "category": "fashion",
+    "image": "https://www.fox.co.il/images/jeans-blue.jpg",
+    "description": "ג'ינס סקיני כחול כהה, תאימות מושלמת. בסגנון זה ממש לא מצאתי בחנויות אחרות. מחיר זהב!"
   }
 ]
 ```
