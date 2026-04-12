@@ -44,11 +44,11 @@ const PERSONA_KEYS = ['sarcastic', 'techNerd', 'budget', 'influencer'];
 // ─── Category mapping ─────────────────────────────────────────────────────────
 
 const CATEGORY_MAP = {
-  electronics: ['ksp', 'bug', 'lastprice', 'מחשב', 'טלפון', 'אוזניות', 'מסך', 'מקלדת', 'עכבר', 'טאבלט', 'מצלמה', 'רמקול'],
+  electronics: ['מחשב', 'טלפון', 'אוזניות', 'מסך', 'מקלדת', 'עכבר', 'טאבלט', 'מצלמה', 'רמקול'],
   fashion:     ['בגד', 'נעל', 'אופנה', 'חולצה', 'מכנס', 'שמלה'],
   'home-garden': ['בית', 'מטבח', 'ריהוט', 'גינה', 'מנורה', 'כרית'],
-  'food-drink':  ['shufersal', 'rami-levy', 'ramiLevy', 'מזון', 'שתייה', 'סופר'],
-  sports:      ['decathlon', 'ספורט', 'כדור', 'אופניים', 'ריצה', 'כושר'],
+  'food-drink':  ['מזון', 'שתייה', 'סופר', 'קפה', 'שוקולד'],
+  sports:      ['ספורט', 'כדור', 'אופניים', 'ריצה', 'כושר'],
   travel:      ['טיסה', 'מלון', 'חופשה', 'תיור'],
   entertainment: ['משחק', 'סרט', 'ספר', 'מנוי'],
 };
@@ -115,186 +115,6 @@ async function writeDealWithAI(rawDeal, personaKey) {
   }
 }
 
-// ─── Site scrapers ────────────────────────────────────────────────────────────
-
-async function scrapeWithPlaywright(siteConfig) {
-  let chromium, playwright;
-  try {
-    playwright = require('playwright');
-    chromium = playwright.chromium;
-  } catch {
-    console.warn('[hunter] Playwright not available, skipping', siteConfig.name);
-    return [];
-  }
-
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
-  const deals = [];
-
-  try {
-    await page.goto(siteConfig.url, { timeout: 30000, waitUntil: 'domcontentloaded' });
-
-    if (siteConfig.waitFor) {
-      await page.waitForSelector(siteConfig.waitFor, { timeout: 10000 }).catch(() => {});
-    }
-
-    const raw = await page.evaluate((config) => {
-      const items = document.querySelectorAll(config.selectors.item);
-      const results = [];
-      items.forEach((el) => {
-        const titleEl  = el.querySelector(config.selectors.title);
-        const priceEl  = el.querySelector(config.selectors.price);
-        const origEl   = el.querySelector(config.selectors.originalPrice);
-        const imageEl  = el.querySelector(config.selectors.image);
-        const linkEl   = el.querySelector(config.selectors.link) || el.closest('a');
-
-        const title = titleEl?.innerText?.trim();
-        if (!title) return;
-
-        const priceText = priceEl?.innerText?.replace(/[^0-9.]/g, '') || '';
-        const origText  = origEl?.innerText?.replace(/[^0-9.]/g, '') || '';
-        const price     = parseFloat(priceText) || null;
-        const original  = parseFloat(origText) || null;
-        const image     = imageEl?.getAttribute('src') || imageEl?.getAttribute('data-src') || null;
-        const href      = linkEl?.getAttribute('href') || null;
-        const discount  = price && original && original > price
-          ? Math.round(((original - price) / original) * 100) : 0;
-
-        results.push({ title, price, original, image, href, discount });
-      });
-      return results;
-    }, siteConfig);
-
-    for (const item of raw) {
-      const href = item.href
-        ? (item.href.startsWith('http') ? item.href : new URL(item.href, siteConfig.url).href)
-        : siteConfig.url;
-
-      deals.push({
-        title:         item.title,
-        price:         item.price,
-        originalPrice: item.original,
-        discountPct:   item.discount,
-        image:         item.image,
-        url:           href,
-        site:          siteConfig.name,
-        merchant:      siteConfig.merchant || siteConfig.name,
-      });
-    }
-
-    console.log(`[hunter] ${siteConfig.name}: scraped ${deals.length} items`);
-  } catch (err) {
-    console.error(`[hunter] Error scraping ${siteConfig.name}:`, err.message);
-  } finally {
-    await browser.close();
-  }
-
-  return deals;
-}
-
-// ─── Site configurations ──────────────────────────────────────────────────────
-
-const SITES = [
-  {
-    name: 'KSP',
-    merchant: 'KSP',
-    url: 'https://ksp.co.il/web/cat/1',
-    waitFor: '.products-area',
-    selectors: {
-      item:          '.product',
-      title:         '.productName',
-      price:         '.price',
-      originalPrice: '.old-price',
-      image:         'img.prodImg',
-      link:          'a.productName',
-    },
-  },
-  {
-    name: 'Bug',
-    merchant: 'Bug',
-    url: 'https://www.bug.co.il/sale',
-    waitFor: '.product-list',
-    selectors: {
-      item:          '.product-item',
-      title:         '.product-name',
-      price:         '.special-price .price',
-      originalPrice: '.old-price .price',
-      image:         'img.product-image-photo',
-      link:          'a.product-item-link',
-    },
-  },
-  {
-    name: 'osherad',
-    merchant: 'osherad.co.il',
-    url: 'https://www.osherad.co.il/',
-    waitFor: '.deal-item',
-    selectors: {
-      item:          '.deal-item',
-      title:         '.deal-title',
-      price:         '.deal-price',
-      originalPrice: '.deal-original-price',
-      image:         'img.deal-image',
-      link:          'a.deal-link',
-    },
-  },
-  {
-    name: 'Shufersal',
-    merchant: 'שופרסל',
-    url: 'https://www.shufersal.co.il/online/he/S?q=%3Arelevance%3Aisale%3Atrue',
-    waitFor: '.js-product-list',
-    selectors: {
-      item:          '.product-grid-item',
-      title:         '.shufersal-ui-title',
-      price:         '.price',
-      originalPrice: '.regularPrice',
-      image:         'img.shufersal-ui-image',
-      link:          'a.product-grid-item__anchor',
-    },
-  },
-  {
-    name: 'Rami Levy',
-    merchant: 'רמי לוי',
-    url: 'https://www.rami-levy.co.il/he/online/department/sale',
-    waitFor: '.product',
-    selectors: {
-      item:          '.product',
-      title:         '.name',
-      price:         '.price',
-      originalPrice: '.oldprice',
-      image:         'img.product-image',
-      link:          'a',
-    },
-  },
-  {
-    name: 'Decathlon',
-    merchant: 'Decathlon',
-    url: 'https://www.decathlon.co.il/en/content/168-promotions',
-    waitFor: '.product_desc',
-    selectors: {
-      item:          '.product-container',
-      title:         '.product-name',
-      price:         '.price',
-      originalPrice: '.old-price',
-      image:         'img.replace-2x',
-      link:          'a.product_img_link',
-    },
-  },
-  {
-    name: 'LastPrice',
-    merchant: 'LastPrice',
-    url: 'https://www.lastprice.co.il/sales',
-    waitFor: '.product-row',
-    selectors: {
-      item:          '.product-row',
-      title:         '.product-title',
-      price:         '.price-new',
-      originalPrice: '.price-old',
-      image:         'img.product-thumb',
-      link:          'a.product-title',
-    },
-  },
-];
-
 // ─── Save deal to DB ──────────────────────────────────────────────────────────
 
 async function savePendingDeal(deal, persona, hunterScore) {
@@ -331,64 +151,53 @@ async function savePendingDeal(deal, persona, hunterScore) {
   return result.insertId;
 }
 
-// ─── Main run ─────────────────────────────────────────────────────────────────
+// ─── Process deals batch ──────────────────────────────────────────────────────
 
-async function runDealHunter() {
-  console.log('[hunter] Starting deal hunt…');
-  let totalSaved = 0;
+async function processDealsBatch(deals) {
+  if (!Array.isArray(deals) || deals.length === 0) return 0;
+
+  let saved = 0;
   let personaIndex = 0;
 
-  for (const site of SITES) {
-    console.log(`[hunter] Scanning ${site.name}…`);
-    let rawDeals = [];
+  for (const deal of deals) {
+    const persona = PERSONA_KEYS[personaIndex % 4];
+    personaIndex++;
 
     try {
-      rawDeals = await scrapeWithPlaywright(site);
-    } catch (err) {
-      console.error(`[hunter] Scrape failed for ${site.name}:`, err.message);
-      continue;
-    }
-
-    if (rawDeals.length === 0) continue;
-
-    // Score and pick top 5
-    const scored = rawDeals
-      .map((d) => ({ ...d, score: scoreDeal(d) }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
-
-    for (const deal of scored) {
-      const persona = PERSONA_KEYS[personaIndex % 4];
-      personaIndex++;
-
-      try {
-        const written = await writeDealWithAI(deal, persona);
-        const dealWithText = { ...deal, title: written.title, description: written.description };
-        const id = await savePendingDeal(dealWithText, persona, deal.score);
-        if (id) {
-          console.log(`[hunter] Saved pending deal #${id} (${persona}): ${written.title.slice(0, 50)}`);
-          totalSaved++;
-        }
-      } catch (err) {
-        console.error('[hunter] Failed to save deal:', err.message);
+      const score = scoreDeal(deal);
+      const written = await writeDealWithAI(deal, persona);
+      const dealWithText = { ...deal, title: written.title, description: written.description };
+      const id = await savePendingDeal(dealWithText, persona, score);
+      if (id) {
+        console.log(`[hunter] Saved pending deal #${id} (${persona}): ${written.title.slice(0, 50)}`);
+        saved++;
       }
+    } catch (err) {
+      console.error('[hunter] Failed to save deal:', err.message);
     }
   }
 
-  console.log(`[hunter] Done. Saved ${totalSaved} new pending deals.`);
-  return totalSaved;
+  return saved;
+}
+
+// ─── Main run ─────────────────────────────────────────────────────────────────
+
+async function runDealHunter(dealsInput = []) {
+  console.log('[hunter] Processing batch of', dealsInput.length, 'deals…');
+  const saved = await processDealsBatch(dealsInput);
+  console.log(`[hunter] Done. Saved ${saved} new pending deals.`);
+  return saved;
 }
 
 // ─── Scheduler ────────────────────────────────────────────────────────────────
 
 function startDealHunter() {
-  // Run every day at 8:00 AM Israel time
+  // Cron job fires but does nothing (no sources configured)
   cron.schedule('0 8 * * *', () => {
-    console.log('[hunter] Daily run triggered');
-    runDealHunter().catch(console.error);
+    console.log('[hunter] Daily run triggered — no sources configured');
   }, { timezone: 'Asia/Jerusalem' });
 
-  console.log('[hunter] Deal hunter scheduled (daily at 08:00 Asia/Jerusalem)');
+  console.log('[hunter] Scheduler started — use /api/admin/import-deals or JSON modal to add deals');
 }
 
 module.exports = { startDealHunter, runDealHunter };
